@@ -10,11 +10,13 @@ class ProductManager {
 
     //Validar que no exista producto con el mismo code
     validarCode(producto){
-        let buscar;
-        let validarCode = this.products.find(prod => {
-            buscar = prod.code === producto.code;
-            return buscar;
-        });
+        // let buscar;
+        // let validarCode = this.products.find(prod => {
+            //     buscar = prod.code === producto.code;
+            //     return buscar;
+            // });
+        let buscar = this.products.some(prod => prod.code === producto.code);
+
         return buscar;
     }
 
@@ -23,16 +25,10 @@ class ProductManager {
         // Obtener los valores de objeto producto
         const values = Object.values(producto);
 
-        let buscar;
-        let validarCampos = values.find(val => {
-            buscar = val === '' || val === null || val === undefined;
-            return buscar;
-        });
-
-        // Si algún campo está vacío retornar true
-        if(buscar) return true;
-        // Si todos los campos estan llenos retornar False
-        return false;
+        // Some retorna true si encuentra al meno un resultado que coincida con la busqueda
+        let buscar = values.some(value => !value); // Retorna falso si encuentra al gun valor "", null, undefined o 0. Por eso lo negamos con !
+        // Retornamos el valor de la busqueda
+        return buscar;
     }
 
     // Método para agregar un nuevo producto
