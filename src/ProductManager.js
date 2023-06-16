@@ -1,9 +1,9 @@
 // Desafio 2 03/06/23
 
 // Importamos la libreria fs
-const fs = require('fs');
+import fs from 'fs';
 
-class ProductManager {
+export class ProductManager {
     // Método constructor
     constructor() {
         this.path = 'productos.json';
@@ -29,14 +29,11 @@ class ProductManager {
     }
 
     // Método para agregar un nuevo producto
-    addProduct = async (title, description, price, thumbnail, code, stock, id) => {
-
-        // Si ID contine algo lo dejamos tal cual y si nón le asignamos el valor aleatorio
-        if(id === undefined || id === null || id === '') id = Math.floor((Math.random() * (9999 - 1 + 1)) + 1);
+    addProduct = async (title, description, price, thumbnail, code, stock) => {
 
         // Agregamos los datos recibidos a un objeto
         const product = {
-                    id: id,
+                    id: Math.floor((Math.random() * (9999 - 1 + 1)) + 1),
                     title: title,
                     description: description,
                     price: price,
@@ -90,6 +87,7 @@ class ProductManager {
             return producto;
         }else {
             console.log('NOT FOUND: Producto no encontrado');
+            return null;
         }
     }
 
@@ -109,29 +107,28 @@ class ProductManager {
 
     // Método para actualizar productos
     updateProduct = async(obj) => {
-        // Obtenemos la lista de productos actuales
-        const productos = await this.getProducts();
+        try {
+            // Obtenemos la lista de productos actuales
+            let productos = await this.getProducts();
 
-        // Validamos si productos contiene algun elemento si no para terminar la busqueda
-        if(productos.length === 0) return console.log('ERROR: Lista de productos vacia');
+            // Validamos si productos contiene algun elemento si no para terminar la busqueda
+            if(productos.length === 0) return console.log('ERROR: Lista de productos vacia');
 
-        // Variable para guardar el resultado true o false de la busqueda
-        let buscar;
-
-        // Buscamos el producto con el id del objeto utilizando find para que nos devuelva el objeto producto en caso de existir
-        const resultado = productos.find(prod => {
-            buscar = prod.id === obj.id;
-            return buscar;
-        });
-
-        // Validamos si existe o no el producto buscado
-        if(!resultado) return console.log('ERROR: El producto a actualizar no existe.');
-
-        // Eliminamos el producto a actualizar
-        await this.deleteProduct(resultado.id);
-
-        // Agregamos a la lista el producto actualizado
-        await this.addProduct(obj.title, obj.description, obj.price, obj.thumbnail, obj.code, obj.stock, obj.id);
+            // En caso de que coincida el id, se combinan las propiedades de los objetos
+            await fs.promises.writeFile(this.path, JSON.stringify(productos = productos.map(producto => {
+                if(producto.id === obj.id){
+                    console.log(`SUCCESS: Producto con id ${obj.id} actualizado`);
+                    return {
+                        ...producto,
+                        ...obj
+                    };
+                }
+                return producto;
+            })
+            ));
+        } catch (error) {
+            console.log(`Ocurrio un error al actualizar el producto`, error);
+        }
     }
 
     // Método para eliminar un producto de la lista de productos
@@ -153,32 +150,25 @@ class ProductManager {
 /* TESTING */
 async function ejecutar(){
     // Creamos instancia de la clase productManager
-    const productMng = new ProductManager();
-    console.log('LISTA DE PRODUCTOS:', await productMng.getProducts());
+    // const productMng = new ProductManager();
+    // console.log('LISTA DE PRODUCTOS:', await productMng.getProducts());
 
-    // // Creamos varios productos (Todos sin errores)
+    // // Producto sin errores
     // await productMng.addProduct('Papas saladas 250gr', 'Papas fritas saladas caseras de 250gr', 17, './ruta/imgs/img1.jpg', 'papsal250', 12);
-    // await productMng.addProduct('Refresco de naranja 600ml', 'Refresco sabor naranja de 600ml', 15, './ruta/imgs/img2.jpg', 'refnar600', 10);
-    // await productMng.addProduct('Kinder Delice 100gr', 'Chocolate Kinder Delice 100gr', 20, './ruta/imgs/img3.jpg', 'chockide100', 25);
 
     // // Producto con error de CODE
     // await productMng.addProduct('Kinder Bueno 100gr', 'Chocolate Kinder Bueno 100gr', 20, './ruta/imgs/img4.jpg', 'papsal250', 15); // CODE Repetido
 
-    // // Productos con error de CAMPOS
+    // // Producto con error de CAMPOS
     // await productMng.addProduct('Kilo de huevo', '', 45, './ruta/imgs/img5.jpg', 'huevo1kg', 10); // Campo vacio
-    // await productMng.addProduct('Medio Kg de huevo', 'Medio Kilogramo de huevo blanco', 27, './ruta/imgs/img6.jpg', 'huevo1/2kg'); // Campos incompletos
 
-    // // Otros productos sin errores
-    // await productMng.addProduct('Papas enchiladas 250gr', 'Papas fritas enchiladas caseras de 250gr', 17, './ruta/imgs/img7.jpg', 'papench250', 18);
-    // await productMng.addProduct('Paleta payaso 100gr', 'Paleta de choclate paleta Payaso 100gr', 10, './ruta/imgs/img8.jpg', 'palpay100gr', 10);
+    // Buscar Producto por ID
+    // await productMng.getProductById(6051);
 
-    // // Buscar Producto por ID
-    // await productMng.getProductById(3033);
-
-    // // Actualizamos un producto
+    // Actualizamos un producto
     // await productMng.updateProduct({
-    //     id: 3,
-    //     title: 'Paleta2',
+    //     id: 448,
+    //     title: 'Paleta12454',
     //     description: 'Paleta',
     //     price: 8,
     //     thumbnail: './ruta/imgs/img10.jpg',
