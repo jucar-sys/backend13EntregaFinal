@@ -1,0 +1,27 @@
+<nav class="navbar bg-dark">
+    <ul class="navbar-nav container">
+        <li class="nav-item">
+            <a class="nav-link" href="/realtimeproducts" style="color: #fff">Productos en tiempo real</a>
+        </li>
+        {{!-- <li>
+            <a href="/form-prods">Agregar producto</a>
+        </li> --}}
+    </ul>
+</nav>
+
+<div class="container py-4">
+    <h1>Tienda en línea</h1>
+
+    <div>
+        <h3>Lista de productos</h3>
+        <ul id="ulProds" class="list-group">
+            {{#each products}}
+            <li class="list-group-item">
+                <b>{{this.id}}</b> - 
+                {{this.title}} - 
+                ${{this.price}}
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,58 @@
+<nav class="navbar bg-dark">
+    <ul class="navbar-nav container">
+        <li class="nav-item">
+            <a class="nav-link" href="/" style="color: #fff">Inicio</a>
+        </li>
+        {{!-- <li>
+            <a href="/form-prods">Agregar producto</a>
+        </li> --}}
+    </ul>
+</nav>
+
+<div class="container py-4">
+    <h2>Productos</h2>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h3>Agregar producto</h3>
+            <form class="my-4" id="form1">
+                <input class="form-control mb-3" type="text" id="title" name="title" placeholder="Nombre del producto" required>
+                <textarea class="form-control mb-3" cols="20" rows="5" id="description" name="description" placeholder="Descripción" required></textarea>
+                <input class="form-control mb-3" type="text" id="code" name="code" placeholder="Código" required>
+                <input class="form-control mb-3" type="number" id="price" name="price" placeholder="Precio" required>
+                <input class="form-control mb-3" type="number" id="stock" name="stock" placeholder="Stock" required>
+                <select class="form-control mb-3" name="category" id="category" required>
+                    <option value="Carteras">Carteras</option>
+                    <option value="Monederos">Monederos</option>
+                    <option value="Tarjeteros">Tarjeteros</option>
+                </select>
+                <select class="form-control mb-3" name="status" id="status" required>
+                    <option value="true">True</option>
+                    <option value="false">False</option>
+                </select>
+                <input class="form-control mb-3" type="hidden" id="thumbnails" name="thumbnails" value="/prueba1Form">
+                <button class="btn btn-dark btn-lg" type="submit">Enviar</button>
+            </form>
+        </div>{{!-- .col-md-8 --}}
+    </div>{{!-- .row --}}
+
+    <hr>
+
+    <div>
+        <h3>Lista de productos</h3>
+        <ul id="ulProds" class="list-group">
+            {{#each products}}
+            <li class="list-group-item">
+                <b>{{this.id}}</b> - 
+                {{this.title}} - 
+                ${{this.price}}
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+</div>
+
+{{!-- Importaciones --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/static/js/index.js"></script>
