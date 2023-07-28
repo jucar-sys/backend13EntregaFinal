@@ -1,15 +1,12 @@
 import { Router } from 'express';
-import { ProductManager } from '../ProductManager.js';
+import prodModel from "../DAO/mongoManager/models/product.model.js";
 
 const router = Router();
-
-// Instancia a clase ProductManager
-const productsManager = new ProductManager();
-let productos = await productsManager.getProducts();
 
 // GET - Obtener productos - Limit o lista completa
 router.get('/', async (req, res) => {
     try {
+        let productos = await prodModel.find().lean().exec();
         // Tomamos el valor del query limit
         const limit = req.query.limit;
 
@@ -30,9 +27,9 @@ router.get('/', async (req, res) => {
 router.get('/:pid', async (req, res) => {
     try {
         // Parseamos el id obtenido por params
-        let pid = parseInt(req.params.pid);
+        let pid = req.params.pid;
         // Metemos en una constante la consulta para no duplicar el codigo
-        const productFound = await productsManager.getProductById(pid);
+        const productFound = await prodModel.findById(pid);
 
         // Verificamos que el producto exista
         if(!productFound) throw {message: 'NOT FOUND: Producto no encontrado'}
@@ -51,7 +48,18 @@ router.post('/', async (req, res) => {
         let product = req.body;
 
         // Agregamos el producto
-        await productsManager.addProduct(product.title, product.description, product.code, product.price, product.status, product.stock, product.category, product.thumbnails);
+        if(product.status === 'true'){
+            product.status = true;
+        }
+        if(product.status === 'false'){
+            product.status = false;
+        }
+        product.price = parseInt(product.price);
+        product.stock = parseInt(product.stock);
+        console.log('product: ', product);
+
+        const prodGenerated = new prodModel(product);
+        await prodGenerated.save();
 
         res.status(200).json({status: 'success', message: 'Producto agregado con exito!!!'});
     } catch (error) {
@@ -59,6 +67,7 @@ router.post('/', async (req, res) => {
     }
 });
 
+// TODO: Revisar como actualizar docuemnto en Mongo
 // PUT - Actualizar un producto sin cambiar el id
 router.put('/:pid', async (req, res) => {
     try {
@@ -68,7 +77,8 @@ router.put('/:pid', async (req, res) => {
         const product = req.body;
 
         // Actualizamos el producto
-        await productsManager.updateProduct(product, pid);
+        // await productsManager.updateProduct(product, pid); // File manager
+        // await productsManager.updateProduct(product, pid);
 
         res.status(200).json({status: 'success', message: 'Producto actualizado en exito!!!'});
     } catch (e) {
@@ -77,12 +87,14 @@ router.put('/:pid', async (req, res) => {
 });
 
 // DELETE - Eliminar producto por ID
+
+// FILE MANAGER
 router.delete('/:pid', async (req, res) => {
     try {
         // Tomar el id pasado como parametro y lo parseamos
-        const pid = parseInt(req.params.pid);
+        const pid = req.params.pid;
 
-        if(!await productsManager.deleteProduct(pid)) throw {message: 'NOT FOUND'}
+        if(!await prodModel.deleteOne({_id: pid})) throw {message: 'NOT FOUND'}
 
         res.status(200).json({status: 'success', message: 'Producto eliminado en exito!!!'});
     } catch (e) {

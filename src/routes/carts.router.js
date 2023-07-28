@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { CartsManager } from '../CartsManager.js';
-import { ProductManager } from '../ProductManager.js';
+import { CartsManager } from '../DAO/fileManager/CartsManager.js';
+import { ProductManager } from '../DAO/fileManager/ProductManager.js';
+import cartModel from '../DAO/mongoManager/models/cart.model.js';
 
 const router = Router();
 
@@ -11,8 +12,10 @@ const productManager = new ProductManager();
 // POST - Agregar nuevo carrito
 router.post('/', async (req, res) => {
     try {
+        const productsCar = [];
         // Agregamos el carrito
-        await cartsManager.addCart();
+        const cartGenerated = new cartModel(productsCar);
+        await cartGenerated.save();
 
         res.status(200).json({status: 'success', message: 'Carrito agregado con exito!!!'});
     } catch (e) {
@@ -24,8 +27,8 @@ router.post('/', async (req, res) => {
 router.get('/:cid', async (req, res) => {
     try {
         // Parseamos el id obtenido como parametro
-        let cid = parseInt(req.params.cid);
-        const cartFound = await cartsManager.getCartById(cid);
+        let cid = req.params.cid;
+        const cartFound = await cartModel.findById(cid);
 
         // Verificamos que el carrito exista
         if(!cartFound) throw {message: 'NOT FOUND: Carrito no encontrado'};
@@ -37,6 +40,7 @@ router.get('/:cid', async (req, res) => {
     }
 });
 
+// TODO: Revisar como actualizar datos en Mongo
 // POST - Agregar producto al array de productos del carrito indicado
 router.post('/:cid/product/:pid', async (req, res) => {
     try {

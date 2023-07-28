@@ -43,7 +43,7 @@ socket.on('recargar', data => {
 
     // Creamos el array de productos
     data.forEach(product => {
-        products += `<li class="list-group-item"><b>${product.id}</b> - ${product.title} - ${product.price}</li>`;
+        products += `<li class="list-group-item"><b>${product._id}</b> - ${product.title} - $${product.price} - <a class ="btn btn-danger py-0 px-2" href="/delete/${product._id}">Borrar</a></li>`;
     });
 
     // Pintamos el resultado en el HTML
