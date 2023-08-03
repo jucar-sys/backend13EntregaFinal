@@ -12,10 +12,6 @@ import messModel from './DAO/mongoManager/models/message.model.js';
 const app = express();
 const port = 8080;
 
-// Configurar socket
-const httpServer = app.listen(port, () => console.log('Listening...'));
-const io = new Server(httpServer);
-
 // Codigo para que nuestra api reconozca el formato JSON y no tenga errores
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -43,46 +39,49 @@ mongoose.connect(URL, {
     dbName: 'ecommerce'
 }).then(() => {
     console.log('DB Connect Success');
+    // Conexión
+    const httpServer = app.listen(port, () => console.log('Listening...'));
+    const io = new Server(httpServer);
+
+    // Configurar socket
+    io.on('connect', socket => {
+        console.log('Cliente conectado...');
+
+        // Obtener la data del form para mostrarla en pantalla
+        socket.on('newProduct', async data => {
+            // Agregamos el producto a nuesta lista de productos
+            if(data.status === 'true'){
+                data.status = true;
+            }
+            if(data.status === 'false'){
+                data.status = false;
+            }
+            data.price = parseInt(data.price);
+            data.stock = parseInt(data.stock);
+            console.log('data: ', data);
+
+            const prodGenerated = new prodModel(data);
+            await prodGenerated.save();
+
+            // Obtenemos la lista actualizada
+            const productos = await prodModel.find().lean().exec();
+
+            // Emitimos el resultado
+            io.emit('recargar', productos);
+        });
+
+        // Sockets para chat
+        // Variable para los mensajes del chat
+        socket.on('new', user => console.log(`${user} se acaba de conectar`));
+
+        socket.on('message', async data => {
+            const messages = await messModel.find().lean().exec();
+            const messGenerated = new messModel(data);
+            await messGenerated.save();
+            messages.push(data);
+            io.emit('logs', messages);
+        });
+    });
 }).catch(e => {
     console.log('Error: ' + e.message);
-});
-
-// Conexión
-io.on('connect', socket => {
-    console.log('Cliente conectado...');
-
-    // Obtener la data del form para mostrarla en pantalla
-    socket.on('newProduct', async data => {
-        // Agregamos el producto a nuesta lista de productos
-        if(data.status === 'true'){
-            data.status = true;
-        }
-        if(data.status === 'false'){
-            data.status = false;
-        }
-        data.price = parseInt(data.price);
-        data.stock = parseInt(data.stock);
-        console.log('data: ', data);
-
-        const prodGenerated = new prodModel(data);
-        await prodGenerated.save();
-
-        // Obtenemos la lista actualizada
-        const productos = await prodModel.find().lean().exec();
-
-        // Emitimos el resultado
-        io.emit('recargar', productos);
-    });
-
-    // Sockets para chat
-    // Variable para los mensajes del chat
-    socket.on('new', user => console.log(`${user} se acaba de conectar`));
-
-    socket.on('message', async data => {
-        const messages = await messModel.find().lean().exec();
-        const messGenerated = new messModel(data);
-        await messGenerated.save();
-        messages.push(data);
-        io.emit('logs', messages);
-    });
 });

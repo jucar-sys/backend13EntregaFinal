@@ -4,20 +4,40 @@ import prodModel from "../DAO/mongoManager/models/product.model.js";
 const router = Router();
 
 // GET - Obtener productos - Limit o lista completa
+// Limit - OK
+// Page - OK
+// Query - TODO: Falta
+// Sort - TODO: Falta
+// Formato de objeto - OK
+// Busqueda y ordenamiento - TODO: Falta
 router.get('/', async (req, res) => {
     try {
-        let productos = await prodModel.find().lean().exec();
-        // Tomamos el valor del query limit
-        const limit = req.query.limit;
-
-        // Si el query limit no existe retornar la lista de productos completa
-        if(!limit) return res.status(200).json(productos);
+        // let productos = await prodModel.find().lean().exec();
+        // Tomamos el valores opcionales del query
+        // const query = req.query?.query || "";
+        // console.log(query);
+        const page = parseInt(req.query?.page || 1);
+        const limit = parseInt(req.query?.limit || 10);
 
         // Validamos que limit sea mayor a 0 y menor a 11
         if(limit < 1 || limit > 10) throw {message: `NOT FOUND: El valor de limit debe ser mayor a 0 y menor que 11`};
 
+        let result = await prodModel.paginate({}, {
+            page,
+            limit,
+            lean: true // Pasar a formato JSON
+        });
+
+        result.prevLink = result.hasPrevPage ? `/api/products?page=${result.prevPage}&limit=${limit}` : null;
+        result.nextLink = result.hasNextPage ? `/api/products?page=${result.nextPage}&limit=${limit}` : null;
+
+        console.log(result);
+
+        return res.status(200).json({status: "success", result});
+        // res.render('users', result)
+
         // Mostramos solo la cantidad de elementos deseados
-        return res.status(200).json(productos.slice(0, limit));
+        // return res.status(200).json(productos.slice(0, limit));
     } catch (e) {
         res.status(400).json({status: 'error', message: e.message});
     }
@@ -87,14 +107,12 @@ router.put('/:pid', async (req, res) => {
 });
 
 // DELETE - Eliminar producto por ID
-
-// FILE MANAGER
 router.delete('/:pid', async (req, res) => {
     try {
         // Tomar el id pasado como parametro y lo parseamos
         const pid = req.params.pid;
 
-        if(!await prodModel.deleteOne({_id: pid})) throw {message: 'NOT FOUND'}
+        if(!await prodModel.deleteOne({_id: ObjectId(pid)})) throw {message: 'NOT FOUND'}
 
         res.status(200).json({status: 'success', message: 'Producto eliminado en exito!!!'});
     } catch (e) {
