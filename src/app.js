@@ -1,16 +1,21 @@
 import express from 'express';
+import session from 'express-session';
 import handlebars from 'express-handlebars';
-import { Server } from 'socket.io';
 import mongoose from 'mongoose';
-import __dirname from './utils.js';
+import MongoStore from 'connect-mongo';
+import { Server } from 'socket.io';
+
 import routerViews from './routes/views.router.js';
+import sessionRouter from './routes/session.router.js'
 import productsRouter from './routes/products.router.js';
 import cartsRouter from './routes/carts.router.js';
 import prodModel from './DAO/mongoManager/models/product.model.js';
 import messModel from './DAO/mongoManager/models/message.model.js';
+import __dirname from './utils.js';
 
 const app = express();
 const port = 8080;
+const dbName = 'ecommerce'
 
 // Codigo para que nuestra api reconozca el formato JSON y no tenga errores
 app.use(express.json());
@@ -21,23 +26,38 @@ app.engine('handlebars', handlebars.engine());
 app.set('views', __dirname + '/views');
 app.set('view engine', 'handlebars');
 
+// Corremos el server
+mongoose.set('strictQuery', false);
+const URL = 'mongodb+srv://JCBaits:SJHTYNpPXojPJP0S@ecommcluster1.yqzx7bs.mongodb.net/?retryWrites=true&w=majority';
+
+// Configurar la sesion
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl: URL,
+        dbName,
+        mongoOptions: {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        },
+        ttl: 100
+    }),
+    secret: 'paraFirmarElIDEnElBrowser',
+    resave: true, // para mantener la session activa
+    saveUninitialized: true // Guardar cualquier cosa, así sea vacio
+}));
+
 // Ruta estática
 app.use('/static', express.static(__dirname + '/public'));
 
 // Rutas
 app.get(('/health', (req, res) => {res.send('OK')}));
 app.use('/', routerViews);
+app.use('/api/session', sessionRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 
-// Corremos el server
-mongoose.set('strictQuery', false);
-const URL = 'mongodb+srv://JCBaits:SJHTYNpPXojPJP0S@ecommcluster1.yqzx7bs.mongodb.net/?retryWrites=true&w=majority';
-
 // Conectamos a MongoDB
-mongoose.connect(URL, {
-    dbName: 'ecommerce'
-}).then(() => {
+mongoose.connect(URL, {dbName}).then(() => {
     console.log('DB Connect Success');
     // Conexión
     const httpServer = app.listen(port, () => console.log('Listening...'));

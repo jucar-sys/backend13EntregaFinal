@@ -5,38 +5,69 @@ import cartModel from "../DAO/mongoManager/models/cart.model.js";
 
 const router = Router();
 
+// Login
+router.get('/', (req, res) => {
+    // Si se está logueado pasar a la vista de productos
+    if(req.session?.user) return res.redirect('/products');
+
+    res.render('login', {});
+});
+
+// Register
+router.get('/register', (req, res) => {
+    // Si se está logueado pasar a la vista de productos
+    if(req.session?.user) return res.redirect('/products');
+
+    res.render('register', {});
+});
+
+// Midleware de inicio de sesion
+function auth(req, res, next) {
+    if(req.session?.user) return next();
+    return res.redirect('/');
+}
+// Profile
+router.get('/profile', auth, (req, res) => {
+    // Obtenemos los datos del usuario
+    const user = req.session.user;
+    // Redirigimos al render de profile y pasamos los datos del usuari
+    res.render('profile', user);
+});
+
 // Index - OK
-router.get('/', async (req, res) => {
+router.get('/home', auth, async (req, res) => {
     // Traer la lista de productos de la DB
     const products  =  await prodModel.find().lean().exec();
     res.render('index', { products });
 });
 
 // Lista de productos - Realtime - OK
-router.get('/realtimeproducts', async (req, res) => {
+router.get('/realtimeproducts', auth, async (req, res) => {
     // Traer la lista de productos de la DB
     const products  =  await prodModel.find().lean().exec();
     res.render('realTimeProducts', { products });
 });
 
 // Eliminar Prod - OK
-router.get('/delete/:id', async (req, res) => {
+router.get('/delete/:id', auth, async (req, res) => {
     const id = req.params.id;
 
     await prodModel.deleteOne({ _id: id });
-    res.redirect('/products');
+    return res.redirect('/products');
 });
 
 // Chat - OK
-router.get('/chat', async (req, res) => {
+router.get('/chat', auth, async (req, res) => {
     // Traer lista de chat de la BD
     const chats  =  await messModel.find().lean().exec();
     res.render('chat', { chats });
 });
 
 // Products - OK
-router.get('/products', async (req, res) => {
+router.get('/products', auth, async (req, res) => {
     try {
+        // Obtenemos los datos del usuario
+        const user = req.session.user;
         // Tomamos el valores opcionales del query
         const page = parseInt(req.query?.page || 1);
         const limit = parseInt(req.query?.limit || 4);
@@ -87,14 +118,14 @@ router.get('/products', async (req, res) => {
         products.prevLink = products.hasPrevPage ? `/products?limit=${limit}&page=${products.prevPage}&sort=${Object.keys(sort)[0]},${Object.values(sort)[0]}&query=${Object.keys(query)[0]},${Object.values(query)[0]}` : null;
         products.nextLink = products.hasNextPage ? `/products?limit=${limit}&page=${products.nextPage}&sort=${Object.keys(sort)[0]},${Object.values(sort)[0]}&query=${Object.keys(query)[0]},${Object.values(query)[0]}` : null;
 
-        res.render('products', { status: "success", sort, query, products });
+        res.render('products', { status: "success", sort, query, products, user });
     } catch (e) {
         res.status(400).json({status: 'error', message: e.message});
     }
 });
 
 // Product detail - OK
-router.get('/product/:pid', async (req, res) => {
+router.get('/product/:pid', auth, async (req, res) => {
     const pid = req.params.pid;
 
     // Traer los detalles del producto de la BD
@@ -103,15 +134,12 @@ router.get('/product/:pid', async (req, res) => {
 });
 
 // Cart detail - OK
-router.get('/cart/:cid', async (req, res) => {
+router.get('/cart/:cid', auth, async (req, res) => {
     const cid = req.params.cid;
 
     // Traer los detalles del producto de la BD
     const cart  =  await cartModel.findOne({_id: cid}).lean().exec();
     res.render('cart_detail', {idCart: cart._id, prods: cart.products });
 });
-
-// Agregar a carrito - TODO: Realizar
-
 
 export default router;
