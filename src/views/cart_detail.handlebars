@@ -1,0 +1,18 @@
+<h3 class="text-center pb-2">Carrito</h3>
+<hr>
+
+<div>
+    <h3>Lista de productos del carrito - {{idCart}}</h3>
+    <hr>
+    <ul id="ulCard" class="list-group">
+        {{#each prods}}
+        <li class="list-group-item">
+            {{!-- <b>{{this._id}}</b> --}}
+            <h6>{{this.product.title}}</h6>
+            <p>Precio unitario: ${{this.product.price}}</p>
+            <p>Cantidad: {{this.quantity}}</p>
+            {{!-- <a class ="btn btn-danger py-0 px-2" href="http://127.0.0.1:8080/api/carts/64d07f90ecc6dcaa9e8dc1eb/products/{{this.product._id}}">Borrar</a> --}}
+        </li>
+        {{/each}}
+    </ul>
+</div>

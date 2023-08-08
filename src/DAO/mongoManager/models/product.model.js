@@ -36,7 +36,7 @@ const prodSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    thumbnails: String
+    thumbnails: Array
 });
 
 // Agregamos el plugin de paginación al esquema

@@ -1,0 +1,23 @@
+<h3 class="text-center pb-2">DETALLE PRODUCTO</h3>
+<hr>
+
+<div>
+    {{#each product}}
+        <h3>{{this.title}}</h3>
+        <hr>
+        <div class="row">
+            <div class="col-md-6">
+                <img src="{{this.thumbnails}}" class="img-fluid" alt="{{this.title}}">
+            </div>
+            <div class="col-md-6">
+                <p>{{this.description}}</p>
+                <h4>${{this.price}}</h4>
+                <p>Stock: {{this.stock}}</p>
+                <p>Categoria: {{this.category}}</p>
+                <hr>
+                <p><small>{{this._id}}</small></p>
+                <a class ="btn btn-success py-0 px-2 mr-3" href="/api/carts/64d07f90ecc6dcaa9e8dc1eb/product/{{this._id}}">Agregar al carrito</a>
+            </div>
+        </div>
+    {{/each}}
+</div>
