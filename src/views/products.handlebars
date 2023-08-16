@@ -1,76 +1,103 @@
-<h3 class="text-center pb-2">PRODUCTOS</h3>
-<hr>
-<div class="text-center">
-    <h5>Usuario: {{user.first_name}} {{user.last_name}}</h5>
-    <b>Edad:</b> {{user.age}} .:. 
-    <b>Email:</b> {{user.email}} .:. 
-    <b>Rol:</b> {{user.rol}}
-</div>
-<hr>
+{{!-- =============== NAVBAR =============== --}}
+    <nav class="navbar navbar-expand-lg bg-dark">
+        <ul class="navbar-nav container navbarX">
+            {{!-- <li class="nav-item">
+                <a class="nav-link" href="/home">Inicio</a>
+            </li> --}}
+            <li class="nav-item">
+                <a class="nav-link" href="/products">Productos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/realtimeproducts">Agregar producto</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/cart/64d07f90ecc6dcaa9e8dc1eb">Carrito</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/chat">Chat</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/api/session/logout">Cerrar sesión</a>
+            </li>
+        </ul>
+    </nav>
+{{!-- ====================================== --}}
 
-{{!-- Filtros --}}
-<form id="filtrosForm" class="d-inline-flex align-items-center">
-    <div class="form-group mx-2">
-        <label for="q-limit">Limit</label>
-        <input type="number" class="form-control" id="q-limit" value="{{limt}}" placeholder="Productos a mostrar">
-    </div>
-    <div class="form-group mx-2">
-        <label for="q-page">Page</label>
-        <input type="number" class="form-control" id="q-page" value="{{page}}" placeholder="Página a visitar">
-    </div>
-    <div class="form-group mx-2">
-        <label for="q-sort-price">Ordenar por precio</label>
-        <select class="form-control" name="q-sort-price" id="q-sort-price">
-            <option value="default">Selecciona un orden</option>
-            <option value="asc">Mas barato a mas caro</option>
-            <option value="desc">Mas caro a mas barato</option>
-        </select>
-    </div>
-    <div class="form-group mx-2">
-        <label for="q-category">Mostrar por categoría</label>
-        <select class="form-control" name="q-category" id="q-category">
-            <option value="default">Selecciona una categoría</option>
-            <option value="Carteras">Carteras</option>
-            <option value="Tarjeteros">Tarjeteros</option>
-            <option value="Monederos">Monederos</option>
-        </select>
-    </div>
-    <button type="submit" class="btn btn-info h-50">Filtrar</button>
-</form>
-<hr>
-
-<div>
-    <h3>Lista de productos</h3>
-    <hr>
-
-    {{#each products.docs}}
-        <div class="d-inline-flex justify-content-center">
-            <a href="/product/{{this._id}}">
-                <div class="card" style="width: 17rem;">
-                    <img src="{{this.thumbnails}}" class="card-img-top" alt="{{this.title}}">
-                    <div class="card-body">
-                        <h5 class="card-title">{{this.title}}</h5>
-                        <p><small>{{this._id}}</small></p>
-                        <h4>${{this.price}}</h4>
-                        <p class="card-text">{{this.description}}</p>
-                        <a class ="btn btn-success py-0 px-2 mr-3" href="/api/carts/64d07f90ecc6dcaa9e8dc1eb/product/{{this._id}}">Agregar al carrito</a>
-                        <a class ="btn btn-danger py-0 px-2" href="/delete/{{this._id}}">Borrar</a>
-                    </div>
-                </div>
-            </a>
+    <div class="container py-4">
+        <h3 class="text-center pb-2">PRODUCTOS</h3>
+        <hr>
+        <div class="text-center">
+            <h5>Usuario: {{user.first_name}} {{user.last_name}}</h5>
+            <b>Edad:</b> {{user.age}} .:. 
+            <b>Email:</b> {{user.email}} .:. 
+            <b>Rol:</b> {{user.rol}}
         </div>
-    {{/each}}
+        <hr>
 
-    <div class="text-center">
-        {{#if products.hasPrevPage}}
-        <a href="{{products.prevLink}}" class="btn btn-dark">Anterior</a>
-        {{/if}}
-        {{#if products.hasNextPage}}
-        <a href="{{products.nextLink}}" class="btn btn-dark">Siguiente</a>
-        {{/if}}
+        {{!-- Filtros --}}
+        <form id="filtrosForm" class="d-inline-flex align-items-center">
+            <div class="form-group mx-2">
+                <label for="q-limit">Limit</label>
+                <input type="number" class="form-control" id="q-limit" value="{{limt}}" placeholder="Productos a mostrar">
+            </div>
+            <div class="form-group mx-2">
+                <label for="q-page">Page</label>
+                <input type="number" class="form-control" id="q-page" value="{{page}}" placeholder="Página a visitar">
+            </div>
+            <div class="form-group mx-2">
+                <label for="q-sort-price">Ordenar por precio</label>
+                <select class="form-control" name="q-sort-price" id="q-sort-price">
+                    <option value="default">Selecciona un orden</option>
+                    <option value="asc">Mas barato a mas caro</option>
+                    <option value="desc">Mas caro a mas barato</option>
+                </select>
+            </div>
+            <div class="form-group mx-2">
+                <label for="q-category">Mostrar por categoría</label>
+                <select class="form-control" name="q-category" id="q-category">
+                    <option value="default">Selecciona una categoría</option>
+                    <option value="Carteras">Carteras</option>
+                    <option value="Tarjeteros">Tarjeteros</option>
+                    <option value="Monederos">Monederos</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-info h-50">Filtrar</button>
+        </form>
+        <hr>
+
+        <div>
+            <h3>Lista de productos</h3>
+            <hr>
+
+            {{#each products.docs}}
+                <div class="d-inline-flex justify-content-center">
+                    <a href="/product/{{this._id}}">
+                        <div class="card" style="width: 17rem;">
+                            <img src="{{this.thumbnails}}" class="card-img-top" alt="{{this.title}}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{this.title}}</h5>
+                                <p><small>{{this._id}}</small></p>
+                                <h4>${{this.price}}</h4>
+                                <p class="card-text">{{this.description}}</p>
+                                <a class ="btn btn-success py-0 px-2 mr-3" href="/api/carts/64d07f90ecc6dcaa9e8dc1eb/product/{{this._id}}">Agregar al carrito</a>
+                                <a class ="btn btn-danger py-0 px-2" href="/delete/{{this._id}}">Borrar</a>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {{/each}}
+
+            <div class="text-center">
+                {{#if products.hasPrevPage}}
+                <a href="{{products.prevLink}}" class="btn btn-dark">Anterior</a>
+                {{/if}}
+                {{#if products.hasNextPage}}
+                <a href="{{products.nextLink}}" class="btn btn-dark">Siguiente</a>
+                {{/if}}
+            </div>
+
+        </div>
     </div>
-
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>

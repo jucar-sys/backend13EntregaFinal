@@ -4,7 +4,10 @@ import handlebars from 'express-handlebars';
 import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
 import { Server } from 'socket.io';
+import passport from 'passport';
 
+import jwtRouter from './routes/jwt.route.js';
+import initializePassport from './config/passport.config.js';
 import routerViews from './routes/views.router.js';
 import sessionRouter from './routes/session.router.js'
 import productsRouter from './routes/products.router.js';
@@ -46,6 +49,11 @@ app.use(session({
     saveUninitialized: true // Guardar cualquier cosa, así sea vacio
 }));
 
+// Passport
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Ruta estática
 app.use('/static', express.static(__dirname + '/public'));
 
@@ -55,6 +63,7 @@ app.use('/', routerViews);
 app.use('/api/session', sessionRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
+app.use('/jwt', jwtRouter);
 
 // Conectamos a MongoDB
 mongoose.connect(URL, {dbName}).then(() => {

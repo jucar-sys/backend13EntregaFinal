@@ -1,10 +1,37 @@
-<h3 class="text-center pb-2">Mi perfil</h3>
-<hr>
+{{!-- =============== NAVBAR =============== --}}
+    <nav class="navbar navbar-expand-lg bg-dark">
+        <ul class="navbar-nav container navbarX">
+            {{!-- <li class="nav-item">
+                <a class="nav-link" href="/home">Inicio</a>
+            </li> --}}
+            <li class="nav-item">
+                <a class="nav-link" href="/products">Productos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/realtimeproducts">Agregar producto</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/cart/64d07f90ecc6dcaa9e8dc1eb">Carrito</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/chat">Chat</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/api/session/logout">Cerrar sesión</a>
+            </li>
+        </ul>
+    </nav>
+{{!-- ====================================== --}}
 
-<div>
-    <h4>{{fist_name}} {{last_name}}</h4>
-    <hr>
-    <p>Email: {{email}}</p>
-    <p>Edad: {{age}}</p>
-    <p>Tipo de cuenta: {{rol}}</p>
-</div>
+    <div class="container py-4">
+        <h3 class="text-center pb-2">Mi perfil</h3>
+        <hr>
+
+        <div>
+            <h4>{{fist_name}} {{last_name}}</h4>
+            <hr>
+            <p>Email: {{email}}</p>
+            <p>Edad: {{age}}</p>
+            <p>Tipo de cuenta: {{rol}}</p>
+        </div>
+    </div>

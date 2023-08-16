@@ -1,21 +1,48 @@
-<h3 class="text-center">Chat Realtime</h3>
-<hr>
-<div>
-    <h4>Escribe tu mensaje:</h4>
-    <i id="username"></i> <input class="form-control w-50" type="email" pattern="/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/" id="chatbox" required>
-</div>
-<hr>
-<h5>Mensajes</h5>
-<ul id="logs">
-    {{#each chats}}
-        <li class="list-group-item">
-            <b>{{this.user}}</b> - 
-            {{this.message}}
-        </li>
-    {{/each}}
-</ul>
-{{!-- <div id="logs"></div> --}}
+{{!-- =============== NAVBAR =============== --}}
+    <nav class="navbar navbar-expand-lg bg-dark">
+        <ul class="navbar-nav container navbarX">
+            {{!-- <li class="nav-item">
+                <a class="nav-link" href="/home">Inicio</a>
+            </li> --}}
+            <li class="nav-item">
+                <a class="nav-link" href="/products">Productos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/realtimeproducts">Agregar producto</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/cart/64d07f90ecc6dcaa9e8dc1eb">Carrito</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/chat">Chat</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/api/session/logout">Cerrar sesión</a>
+            </li>
+        </ul>
+    </nav>
+{{!-- ====================================== --}}
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="/socket.io/socket.io.js"></script>
-<script src="/static/js/chat.js"></script>
+    <div class="container py-4">
+        <h3 class="text-center">Chat Realtime</h3>
+        <hr>
+        <div>
+            <h4>Escribe tu mensaje:</h4>
+            <i id="username"></i> <input class="form-control w-50" type="email" pattern="/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/" id="chatbox" required>
+        </div>
+        <hr>
+        <h5>Mensajes</h5>
+        <ul id="logs">
+            {{#each chats}}
+                <li class="list-group-item">
+                    <b>{{this.user}}</b> - 
+                    {{this.message}}
+                </li>
+            {{/each}}
+        </ul>
+        {{!-- <div id="logs"></div> --}}
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/static/js/chat.js"></script>
+    </div>

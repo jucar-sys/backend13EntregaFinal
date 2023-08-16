@@ -1,4 +1,5 @@
 import { Router } from "express";
+import passport from "passport";
 import prodModel from "../DAO/mongoManager/models/product.model.js";
 import messModel from "../DAO/mongoManager/models/message.model.js";
 import cartModel from "../DAO/mongoManager/models/cart.model.js";
@@ -12,6 +13,22 @@ router.get('/', (req, res) => {
 
     res.render('login', {});
 });
+
+// Github
+router.get(
+    '/login-github',
+    passport.authenticate('github', {scope: ['user:email'] }),
+    async(req, res) => {}
+)
+
+router.get(
+    '/githubcallback',
+    passport.authenticate('github', { failureRedirect: '/'}),
+    async(req, res) => {
+        req.session.user = req.user
+        res.redirect('/products')
+    }
+)
 
 // Register
 router.get('/register', (req, res) => {

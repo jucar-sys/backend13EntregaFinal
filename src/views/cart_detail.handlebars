@@ -1,18 +1,45 @@
-<h3 class="text-center pb-2">Carrito</h3>
-<hr>
+{{!-- =============== NAVBAR =============== --}}
+    <nav class="navbar navbar-expand-lg bg-dark">
+        <ul class="navbar-nav container navbarX">
+            {{!-- <li class="nav-item">
+                <a class="nav-link" href="/home">Inicio</a>
+            </li> --}}
+            <li class="nav-item">
+                <a class="nav-link" href="/products">Productos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/realtimeproducts">Agregar producto</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/cart/64d07f90ecc6dcaa9e8dc1eb">Carrito</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/chat">Chat</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/api/session/logout">Cerrar sesión</a>
+            </li>
+        </ul>
+    </nav>
+{{!-- ====================================== --}}
 
-<div>
-    <h3>Lista de productos del carrito - {{idCart}}</h3>
-    <hr>
-    <ul id="ulCard" class="list-group">
-        {{#each prods}}
-        <li class="list-group-item">
-            {{!-- <b>{{this._id}}</b> --}}
-            <h6>{{this.product.title}}</h6>
-            <p>Precio unitario: ${{this.product.price}}</p>
-            <p>Cantidad: {{this.quantity}}</p>
-            {{!-- <a class ="btn btn-danger py-0 px-2" href="http://127.0.0.1:8080/api/carts/64d07f90ecc6dcaa9e8dc1eb/products/{{this.product._id}}">Borrar</a> --}}
-        </li>
-        {{/each}}
-    </ul>
-</div>
+    <div class="container py-4">
+        <h3 class="text-center pb-2">Carrito</h3>
+        <hr>
+
+        <div>
+            <h3>Lista de productos del carrito - {{idCart}}</h3>
+            <hr>
+            <ul id="ulCard" class="list-group">
+                {{#each prods}}
+                <li class="list-group-item">
+                    {{!-- <b>{{this._id}}</b> --}}
+                    <h6>{{this.product.title}}</h6>
+                    <p>Precio unitario: ${{this.product.price}}</p>
+                    <p>Cantidad: {{this.quantity}}</p>
+                    {{!-- <a class ="btn btn-danger py-0 px-2" href="http://127.0.0.1:8080/api/carts/64d07f90ecc6dcaa9e8dc1eb/products/{{this.product._id}}">Borrar</a> --}}
+                </li>
+                {{/each}}
+            </ul>
+        </div>
+    </div>

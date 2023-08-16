@@ -1,16 +1,43 @@
-<h1 class="text-center pb-4">Tienda en línea</h1>
+{{!-- =============== NAVBAR =============== --}}
+    <nav class="navbar navbar-expand-lg bg-dark">
+        <ul class="navbar-nav container navbarX">
+            {{!-- <li class="nav-item">
+                <a class="nav-link" href="/home">Inicio</a>
+            </li> --}}
+            <li class="nav-item">
+                <a class="nav-link" href="/products">Productos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/realtimeproducts">Agregar producto</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/cart/64d07f90ecc6dcaa9e8dc1eb">Carrito</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/chat">Chat</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/api/session/logout">Cerrar sesión</a>
+            </li>
+        </ul>
+    </nav>
+{{!-- ====================================== --}}
 
-<div>
-    <h3>Lista de productos</h3>
-    <hr>
-    <ul id="ulProds" class="list-group">
-        {{#each products}}
-        <li class="list-group-item">
-            <b>{{this._id}}</b> - 
-            {{this.title}} - 
-            ${{this.price}} - 
-            <a class ="btn btn-danger py-0 px-2" href="/delete/{{this._id}}">Borrar</a>
-        </li>
-        {{/each}}
-    </ul>
-</div>
+    <div class="container py-4">
+        <h1 class="text-center pb-4">Tienda en línea</h1>
+
+        <div>
+            <h3>Lista de productos</h3>
+            <hr>
+            <ul id="ulProds" class="list-group">
+                {{#each products}}
+                <li class="list-group-item">
+                    <b>{{this._id}}</b> - 
+                    {{this.title}} - 
+                    ${{this.price}} - 
+                    <a class ="btn btn-danger py-0 px-2" href="/delete/{{this._id}}">Borrar</a>
+                </li>
+                {{/each}}
+            </ul>
+        </div>
+    </div>
